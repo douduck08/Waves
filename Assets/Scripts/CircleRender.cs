@@ -13,13 +13,13 @@ public class CircleRender : MonoBehaviour {
 	void Start () {
 		line = gameObject.GetComponent<LineRenderer>();
 
-		line.useWorldSpace = true;
+		line.useWorldSpace = false;
 		CreatePoints (Radius);
 		m_timer = 0;
 	}
 
 	void Update () {
-		if (m_timer < 0.1) {
+		if (m_timer < 0.03) {
 			m_timer += Time.deltaTime;
 		} else {
 			Radius += 1;
