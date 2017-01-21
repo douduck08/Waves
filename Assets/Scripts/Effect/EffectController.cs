@@ -94,6 +94,7 @@ public class EffectController : Singleton<EffectController>
 			   !targetEffBases[i].IsKilling() &&
 			   CanKillTarget(a, b, c, targetEffBases[i]))
 			{
+				Debug.Log("Kill Target: " + targetEffBases[i].name, targetEffBases[i].gameObject);
 				removes.Add(targetEffBases[i]);
 			}
 		}
@@ -124,7 +125,7 @@ public class EffectController : Singleton<EffectController>
 		if(targetEffBases.Contains(effect))
 		{
 			effect.Kill();
-			effect.particle.gameObject.SetActive(false);
+			effect.gameObject.SetActive(false);
 			targetEffBases.Remove(effect);
 			return true;
 		}

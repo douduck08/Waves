@@ -26,6 +26,12 @@ public class MainController : MonoBehaviour {
 		InitialLineParticleTimers ();
 		GenerateTarget (3, 5);
 	}
+
+	[ContextMenu("Create")]
+	private void Test()
+	{
+		GenerateTarget (3, 5);
+	}
 	
 	void Update () {
 		if (m_timer < RoundTime) {

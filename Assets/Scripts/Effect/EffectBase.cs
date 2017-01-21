@@ -16,6 +16,7 @@ public class EffectBase : MonoBehaviour
 		lifeTime = life;
 		isKilling = false;
 		this.colorIdx = colorIdx;
+		SetLife(life);
 	}
 
 	public void SetLife(int life)
