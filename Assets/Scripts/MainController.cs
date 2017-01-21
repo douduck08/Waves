@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MainController : MonoBehaviour {
 
+	public Color[] ColorSetting;
+
 	public WaveSource[] Sources;
 	public float RoundTime = 6f;
 	public float WaveSpeed = 1f;
@@ -11,6 +13,12 @@ public class MainController : MonoBehaviour {
 
 	private float m_timer;
 	private LineParticleTimer[] m_LineParticleTimers;
+
+	void Awake() {
+		for (int i = 0; i < 6; i++) {
+			Config.ColorPool [i] = ColorSetting [i];
+		}
+	}
 
 	void Start () {
 		m_timer = 0f;
@@ -55,7 +63,7 @@ public class MainController : MonoBehaviour {
 	}
 
 	private void LinParticleEnd() {
-		Debug.Log ("Particle End");
+		// Debug.Log ("Particle End");
 	}
 
 	private void KillTargets() {
