@@ -11,7 +11,11 @@ public class WaveSource : MonoBehaviour {
 
 	private SpriteRenderer img;
 
-	void Awake() {
+	void Start() {
+		for (int i = 0; i < 3; i++) {
+			Colors [i] = Config.ColorPool [i];
+		}
+
 		img = this.GetComponent<SpriteRenderer> ();
 		img.color = Colors [CurrentColorIdx];
 	}
