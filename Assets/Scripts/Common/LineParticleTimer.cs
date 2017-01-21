@@ -27,9 +27,9 @@ public class LineParticleTimer : MonoBehaviour {
 			m_Timer += Time.deltaTime;
 			if (m_Timer >= m_tZero) {
 				Vector2 pos1_ = m_MidPoint + m_Direct * Mathf.Sqrt (m_speedFactor * m_Timer * m_Timer);
-				// PlayParticleAt(pos1_);
+				EffectController.Instance.ShowLineEffect(pos1_, Color.white);
 				Vector2 pos2_ = m_MidPoint - m_Direct * Mathf.Sqrt (m_speedFactor * m_Timer * m_Timer);
-				// PlayParticleAt(pos2_);
+				EffectController.Instance.ShowLineEffect(pos2_, Color.white);
 
 				if (CheckVound (pos1_, pos2_)) {
 					m_Playing = false;

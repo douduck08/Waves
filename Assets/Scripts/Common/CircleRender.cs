@@ -22,7 +22,7 @@ public class CircleRender : MonoBehaviour {
 			if (m_timer < 0.03) {
 				m_timer += Time.deltaTime;
 			} else {
-				Radius += m_speed;
+				Radius += m_speed * Time.deltaTime;
 				PrintCircle (Radius);
 				m_timer = 0;
 			}
