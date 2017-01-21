@@ -57,4 +57,20 @@ public class MainController : MonoBehaviour {
 	private void LinParticleEnd() {
 		Debug.Log ("Particle End");
 	}
+
+	private void KillTargets() {
+		TouchTargets (Sources [0].transform.position, Sources [1].transform.position);
+		TouchTargets (Sources [2].transform.position, Sources [1].transform.position);
+		TouchTargets (Sources [2].transform.position, Sources [0].transform.position);
+	}
+
+	private void TouchTargets(Vector2 pos1, Vector2 pos2) {
+		Vector2 diff_ = pos1 - pos2;
+		Vector2 mid_ = (pos1 + pos2) / 2f;
+
+		float a = diff_.x;
+		float b = diff_.y;
+		float c = -(a * mid_.x + b * mid_.y);
+		EffectController.Instance.TryKillTargets (a, b, c);
+	}
 }
