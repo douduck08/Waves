@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class LineParticleTimer : MonoBehaviour {
 
-	public Vector2 UpperBond;
-	public Vector2 LowerBond;
+	public Vector2 UpperBound;
+	public Vector2 LowerBound;
 
 	private bool m_Playing;
 	private float m_Timer;
@@ -55,6 +55,12 @@ public class LineParticleTimer : MonoBehaviour {
 	}
 
 	private bool CheckVound(Vector2 pos1, Vector2 pos2) {
-		return false;
+		if (pos1.x > LowerBound.x && pos1.x < UpperBound.x && pos1.y > LowerBound.y && pos1.y < UpperBound.y) {
+			return false;
+		} else if (pos2.x > LowerBound.x && pos2.x < UpperBound.x && pos2.y > LowerBound.y && pos2.y < UpperBound.y) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
