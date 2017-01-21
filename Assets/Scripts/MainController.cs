@@ -62,15 +62,15 @@ public class MainController : MonoBehaviour {
 	}
 
 	private void PlayAllLineParticle() {
-		PlayLineParticle (0, Sources [0].transform.position, Sources [1].transform.position);
-		PlayLineParticle (1, Sources [2].transform.position, Sources [1].transform.position);
-		PlayLineParticle (2, Sources [2].transform.position, Sources [0].transform.position);
+		PlayLineParticle (0, Sources [0].transform.position, Sources [1].transform.position, Config.MixColor(Sources [0].CurrentColorIdx, Sources [1].CurrentColorIdx));
+		PlayLineParticle (1, Sources [2].transform.position, Sources [1].transform.position, Config.MixColor(Sources [2].CurrentColorIdx, Sources [1].CurrentColorIdx));
+		PlayLineParticle (2, Sources [2].transform.position, Sources [0].transform.position, Config.MixColor(Sources [2].CurrentColorIdx, Sources [0].CurrentColorIdx));
 	}
 
-	private void PlayLineParticle(int idx, Vector2 pos1, Vector2 pos2) {
+	private void PlayLineParticle(int idx, Vector2 pos1, Vector2 pos2, int colorIdx) {
 		Vector2 diff_ = pos1 - pos2;
 		Vector2 normal_ = new Vector2 (-diff_.y, diff_.x);
-		m_LineParticleTimers [idx].PlayLineParticle (WaveSpeed, diff_.magnitude / 2, (pos1 + pos2) / 2f, normal_.normalized);
+		m_LineParticleTimers [idx].PlayLineParticle (WaveSpeed, (diff_.magnitude) / 2f, (pos1 + pos2) / 2f, normal_.normalized, colorIdx);
 	}
 
 	private void LinParticleEnd() {
@@ -78,19 +78,19 @@ public class MainController : MonoBehaviour {
 	}
 
 	private void KillTargets() {
-		TouchTargets (Sources [0].transform.position, Sources [1].transform.position);
-		TouchTargets (Sources [2].transform.position, Sources [1].transform.position);
-		TouchTargets (Sources [2].transform.position, Sources [0].transform.position);
+		TouchTargets (Sources [0].transform.position, Sources [1].transform.position, Config.MixColor(Sources [0].CurrentColorIdx, Sources [1].CurrentColorIdx));
+		TouchTargets (Sources [2].transform.position, Sources [1].transform.position, Config.MixColor(Sources [2].CurrentColorIdx, Sources [1].CurrentColorIdx));
+		TouchTargets (Sources [2].transform.position, Sources [0].transform.position, Config.MixColor(Sources [2].CurrentColorIdx, Sources [0].CurrentColorIdx));
 	}
 
-	private void TouchTargets(Vector2 pos1, Vector2 pos2) {
+	private void TouchTargets(Vector2 pos1, Vector2 pos2, int colorIdx) {
 		Vector2 diff_ = pos1 - pos2;
 		Vector2 mid_ = (pos1 + pos2) / 2f;
 
 		float a = diff_.x;
 		float b = diff_.y;
 		float c = -(a * mid_.x + b * mid_.y);
-		EffectController.Instance.TryKillTargets (a, b, c, 0);
+		EffectController.Instance.TryKillTargets (a, b, c, colorIdx);
 	}
 
 	private void CountTargetLife() {

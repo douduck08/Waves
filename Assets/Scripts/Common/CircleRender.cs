@@ -10,6 +10,7 @@ public class CircleRender : MonoBehaviour {
 
 	private bool m_playing;
 	private float m_timer;
+	private float m_totalTime;
 	private float m_speed;
 
 	void Start () {
@@ -21,8 +22,9 @@ public class CircleRender : MonoBehaviour {
 		if (m_playing) {
 			if (m_timer < 0.03) {
 				m_timer += Time.deltaTime;
+				m_totalTime += Time.deltaTime;
 			} else {
-				Radius += m_speed * Time.deltaTime;
+				Radius = m_speed * m_totalTime;
 				PrintCircle (Radius);
 				m_timer = 0;
 			}
@@ -56,7 +58,8 @@ public class CircleRender : MonoBehaviour {
 		Radius = 0;
 		m_speed = speed;
 		m_playing = true;
-
+		m_totalTime = 0f;
+		m_timer = 0f;
 		Render.SetColors(color, color);
 	}
 }
