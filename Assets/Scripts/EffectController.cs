@@ -35,7 +35,7 @@ public class EffectController : Singleton<EffectController>
 	{
 		var effect = targetEffCreater.ShowEffect(pos, color);
 
-		effect.Init(5);
+		effect.Init(life);
 
 		targetEffBases.Add(effect);
 	}
