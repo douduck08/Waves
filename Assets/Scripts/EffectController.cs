@@ -8,7 +8,7 @@ public class EffectController : Singleton<EffectController>
 	private EffectCreater lineEffCreater = null;
 	private EffectCreater targetEffCreater = null;
 
-	public List<EffectBase> targetInfos = new List<EffectBase>();
+	public List<EffectBase> targetEffBases = new List<EffectBase>();
 
 	void Awake()
 	{
@@ -31,24 +31,24 @@ public class EffectController : Singleton<EffectController>
 				}));
 	}
 
-	public void ShowTargetEffect(Vector2 pos, Color color)
+	public void ShowTargetEffect(Vector2 pos, Color color, int life)
 	{
 		var effect = targetEffCreater.ShowEffect(pos, color);
 
 		effect.Init(5);
 
-		targetInfos.Add(effect);
+		targetEffBases.Add(effect);
 	}
 
 	public void SubTargetLifeTime()
 	{
 		List<EffectBase> removes = new List<EffectBase>();
 
-		for(int i = 0; i < targetInfos.Count; i++)
+		for(int i = 0; i < targetEffBases.Count; i++)
 		{
-			if(targetInfos[i].CheckDieAndSubTime())
+			if(targetEffBases[i].CheckDieAndSubTime())
 			{
-				removes.Add(targetInfos[i]);
+				removes.Add(targetEffBases[i]);
 			}
 		}
 
@@ -58,13 +58,34 @@ public class EffectController : Singleton<EffectController>
 		}
 	}
 
-	public void EndTarget(EffectBase effect)
+	public void TryKillTargets(float a, float b, float c)
 	{
-		if(targetInfos.Contains(effect))
+		for(int i = 0; i < targetEffBases.Count; i++)
 		{
-			// TODO: call main system
+			if(	!targetEffBases[i].IsKilling() &&
+				CanKillTarget(a,b,c,targetEffBases[i]))
+			{
+				targetEffBases[i].Kill();
+			}
+		}
+	}
+
+	private bool CanKillTarget(float a, float b, float c, EffectBase target)
+	{
+		var x = target.transform.position.x;
+		var y = target.transform.position.y;
+		var child = Mathf.Abs((a * x) + (b * y) + c);
+		var parent = Mathf.Sqrt((a*a) + (b*b));
+		var d = child / parent;
+		return d <= target.radius;
+	}
+
+	private void EndTarget(EffectBase effect)
+	{
+		if(targetEffBases.Contains(effect))
+		{
 			effect.particle.gameObject.SetActive(false);
-			targetInfos.Remove(effect);
+			targetEffBases.Remove(effect);
 		}
 	}
 }
