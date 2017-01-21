@@ -7,6 +7,8 @@ public class MainController : MonoBehaviour {
 	public Color[] ColorSetting;
 
 	public WaveSource[] Sources;
+	public LineCaller[] LineCallers;
+
 	public float RoundTime = 6f;
 	public float WaveSpeed = 1f;
 	public Vector2 TargetBound;
@@ -38,7 +40,8 @@ public class MainController : MonoBehaviour {
 			m_timer += Time.deltaTime;
 		} else {
 			PlayAllPulse ();
-			PlayAllLineParticle ();
+			PlayAllLine ();
+//			PlayAllLineParticle ();
 			CountTargetLife ();
 			m_timer = 0;
 		}
@@ -61,9 +64,16 @@ public class MainController : MonoBehaviour {
 			EffectController.Instance.ShowTargetEffect (new Vector2 (x_, y_), color_, life);
 		}
 	}
+
 	private void PlayAllPulse() {
 		for (int i = 0; i < Sources.Length; i++) {
 			Sources [i].Pulse (WaveSpeed);
+		}
+	}
+
+	private void PlayAllLine() {
+		for (int i = 0; i < LineCallers.Length; i++) {
+			LineCallers [i].CallNewLine (WaveSpeed);
 		}
 	}
 

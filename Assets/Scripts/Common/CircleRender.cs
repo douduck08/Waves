@@ -30,7 +30,7 @@ public class CircleRender : MonoBehaviour {
 			}
 		}
 
-		if (Radius > 50) {
+		if (Radius > 100) {
 			DestroyObject (this.gameObject);
 		}
 	}
