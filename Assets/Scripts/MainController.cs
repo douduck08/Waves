@@ -58,8 +58,8 @@ public class MainController : MonoBehaviour {
 
 	private void PlayLineParticle(int idx, Vector2 pos1, Vector2 pos2) {
 		Vector2 diff_ = pos1 - pos2;
-		Vector2 normal_ = new Vector2 (-diff_.x, diff_.y);
-		m_LineParticleTimers [idx].PlayLineParticle (WaveSpeed, diff_.magnitude, (pos1 + pos2) / 2f, normal_ / normal_.magnitude);
+		Vector2 normal_ = new Vector2 (-diff_.y, diff_.x);
+		m_LineParticleTimers [idx].PlayLineParticle (WaveSpeed, diff_.magnitude / 2, (pos1 + pos2) / 2f, normal_.normalized);
 	}
 
 	private void LinParticleEnd() {
