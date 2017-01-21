@@ -9,6 +9,7 @@ public class MainController : MonoBehaviour {
 	public WaveSource[] Sources;
 	public float RoundTime = 6f;
 	public float WaveSpeed = 1f;
+	public Vector2 TargetBound;
 	public GameObject LineParticleTimerPrefab;
 
 	private float m_timer;
@@ -23,6 +24,7 @@ public class MainController : MonoBehaviour {
 	void Start () {
 		m_timer = 0f;
 		InitialLineParticleTimers ();
+		GenerateTarget (3, 5);
 	}
 	
 	void Update () {
@@ -31,6 +33,7 @@ public class MainController : MonoBehaviour {
 		} else {
 			PlayAllPulse ();
 			PlayAllLineParticle ();
+			CountTargetLife ();
 			m_timer = 0;
 		}
 	}
@@ -40,10 +43,18 @@ public class MainController : MonoBehaviour {
 		for (int i = 0; i < 3; i++) {
 			GameObject go_ = GameObject.Instantiate<GameObject> (LineParticleTimerPrefab, transform);
 			m_LineParticleTimers [i] = go_.GetComponent<LineParticleTimer> ();
-			m_LineParticleTimers [i].SetPlayerEndCallback (LinParticleEnd);
+			m_LineParticleTimers [i].SetPlayerEndCallback (KillTargets);
 		}
 	}
 
+	private void GenerateTarget(int number, int life) {
+		for (int i = 0; i < number; i++) {
+			float x_ = Random.Range (-TargetBound.x, TargetBound.x);
+			float y_ = Random.Range (-TargetBound.y, TargetBound.y);
+			int color_ = Random.Range (0, 3);
+			EffectController.Instance.ShowTargetEffect (new Vector2 (x_, y_), color_, life);
+		}
+	}
 	private void PlayAllPulse() {
 		for (int i = 0; i < Sources.Length; i++) {
 			Sources [i].Pulse (WaveSpeed);
@@ -58,12 +69,12 @@ public class MainController : MonoBehaviour {
 
 	private void PlayLineParticle(int idx, Vector2 pos1, Vector2 pos2) {
 		Vector2 diff_ = pos1 - pos2;
-		Vector2 normal_ = new Vector2 (-diff_.x, diff_.y);
-		m_LineParticleTimers [idx].PlayLineParticle (WaveSpeed, diff_.magnitude, (pos1 + pos2) / 2f, normal_ / normal_.magnitude);
+		Vector2 normal_ = new Vector2 (-diff_.y, diff_.x);
+		m_LineParticleTimers [idx].PlayLineParticle (WaveSpeed, diff_.magnitude / 2, (pos1 + pos2) / 2f, normal_.normalized);
 	}
 
 	private void LinParticleEnd() {
-		// Debug.Log ("Particle End");
+		Debug.Log ("Particle End");
 	}
 
 	private void KillTargets() {
@@ -80,5 +91,9 @@ public class MainController : MonoBehaviour {
 		float b = diff_.y;
 		float c = -(a * mid_.x + b * mid_.y);
 		EffectController.Instance.TryKillTargets (a, b, c, 0);
+	}
+
+	private void CountTargetLife() {
+		EffectController.Instance.SubTargetLifeTime ();
 	}
 }
