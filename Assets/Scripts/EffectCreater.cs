@@ -3,33 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using TeamSignal.Utilities;
 using TeamSignal.Utilities.ObjectPools;
-using DG.Tweening;
+using System;
 
 public class EffectCreater : MonoBehaviour
 {
 	public ObjectPool objPool;
 
-//	ParticleSystem myParticleSystem;
-	ParticleSystem.ColorOverLifetimeModule colorModule;
-
-	public void ShowLineEffect(Vector2 pos, Color color)
+	public EffectBase ShowEffect(Vector2 pos, Color color)
 	{
-		var effect = objPool.GetPoolObject<ParticleSystem>();
+		var effect = objPool.GetPoolObject<EffectBase>();
 		effect.gameObject.SetActive(true);
 
 		effect.transform.position = new Vector3(pos.x, pos.y);
 		var gradient = new ParticleSystem.MinMaxGradient(color);
 		gradient.color = color;
 
-		var colorOverLifetime = effect.colorOverLifetime;
+		var colorOverLifetime = effect.particle.colorOverLifetime;
 		colorOverLifetime.color = color;
-		effect.Play();
+		effect.particle.Play();
 
-		StartCoroutine(
-			TSUtil.WaitForSeconds(effect.main.duration + 0.5f, () =>
-				{
-					effect.Stop();
-					effect.gameObject.SetActive(false);
-				}));
+		return effect;
 	}
 }
