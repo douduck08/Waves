@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TeamSignal.Utilities;
+using System;
 
 public class EffectController : Singleton<EffectController>
 {
@@ -60,7 +61,7 @@ public class EffectController : Singleton<EffectController>
 		targetEffBases.Add(effect);
 	}
 
-	public void SubTargetLifeTime()
+	public void SubTargetLifeTime(Action<int> callback = null)
 	{
 		List<EffectBase> removes = new List<EffectBase>();
 
@@ -76,18 +77,35 @@ public class EffectController : Singleton<EffectController>
 		{
 			EndTarget(removes[i]);
 		}
+
+		if(null != callback)
+		{
+			callback(removes.Count);
+		}
 	}
 
-	public void TryKillTargets(float a, float b, float c, int colorIdx)
+	public void TryKillTargets(float a, float b, float c, int colorIdx, Action<int> callback = null)
 	{
+		List<EffectBase> removes = new List<EffectBase>();
+
 		for(int i = 0; i < targetEffBases.Count; i++)
 		{
 			if(targetEffBases[i].CheckColorIdx(colorIdx) &&
 			   !targetEffBases[i].IsKilling() &&
 			   CanKillTarget(a, b, c, targetEffBases[i]))
 			{
-				targetEffBases[i].Kill();
+				removes.Add(targetEffBases[i]);
 			}
+		}
+
+		for(int i = 0; i < removes.Count; i++)
+		{
+			EndTarget(removes[i]);
+		}
+
+		if(null != callback)
+		{
+			callback(removes.Count);
 		}
 	}
 
@@ -101,12 +119,15 @@ public class EffectController : Singleton<EffectController>
 		return d <= target.radius;
 	}
 
-	private void EndTarget(EffectBase effect)
+	private bool EndTarget(EffectBase effect)
 	{
 		if(targetEffBases.Contains(effect))
 		{
+			effect.Kill();
 			effect.particle.gameObject.SetActive(false);
 			targetEffBases.Remove(effect);
+			return true;
 		}
+		return false;
 	}
 }
