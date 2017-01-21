@@ -10,6 +10,7 @@ public class EffectBase : MonoBehaviour
 	public ParticleSystem particle;
 	private bool isKilling = false;
 	private int colorIdx;
+	public LineRenderer lineRen;
 
 	public void Init(int life, int colorIdx)
 	{
@@ -46,5 +47,18 @@ public class EffectBase : MonoBehaviour
 	public bool CheckColorIdx(int idx)
 	{
 		return colorIdx == idx;
+	}
+
+	[ContextMenu("ResetTextSortingLaye")]
+	public void ResetTextSortingLaye()
+	{
+		var ren = lifeText.GetComponent<Renderer>();
+		ren.sortingLayerName = "TextMesh";
+	}
+
+	[ContextMenu("ResetLineRenSortingLaye")]
+	public void ResetLineRenSortingLaye()
+	{
+		lineRen.sortingLayerName = "LineRen";
 	}
 }
