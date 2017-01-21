@@ -13,10 +13,12 @@ public class LineParticleTimer : MonoBehaviour {
 	private Action m_EndingCallback;
 
 	private float m_tZero;
+	private float m_speed;
 	private float m_speedFactor;
 	private float m_disFactor;
 	private Vector2 m_MidPoint;
 	private Vector2 m_Direct;
+	private int m_colorIdx;
 
 	void Start () {
 		m_Playing = false;
@@ -25,10 +27,10 @@ public class LineParticleTimer : MonoBehaviour {
 	void Update () {
 		if (m_Playing) {
 			if (m_Timer >= m_tZero) {
-				Vector2 pos1_ = m_MidPoint + m_Direct * Mathf.Sqrt (m_speedFactor * m_Timer * m_Timer);
-				EffectController.Instance.ShowLineEffect(pos1_, 0);
-				Vector2 pos2_ = m_MidPoint - m_Direct * Mathf.Sqrt (m_speedFactor * m_Timer * m_Timer);
-				EffectController.Instance.ShowLineEffect(pos2_, 0);
+				Vector2 pos1_ = m_MidPoint + m_Direct * m_speed * Mathf.Sqrt (m_Timer * m_Timer - m_tZero * m_tZero);
+				EffectController.Instance.ShowLineEffect(pos1_, m_colorIdx);
+				Vector2 pos2_ = m_MidPoint - m_Direct * Mathf.Sqrt (m_speedFactor * m_Timer * m_Timer - m_disFactor);
+				EffectController.Instance.ShowLineEffect(pos2_, m_colorIdx);
 
 				if (CheckBound (pos1_, pos2_)) {
 					m_Playing = false;
@@ -43,12 +45,14 @@ public class LineParticleTimer : MonoBehaviour {
 		m_EndingCallback = callback;
 	}
 
-	public void PlayLineParticle(float speed, float distant, Vector2 midPoint, Vector2 direct) {
+	public void PlayLineParticle(float speed, float distant, Vector2 midPoint, Vector2 direct, int colorIdx) {
 		m_tZero = distant / speed;
-		m_speedFactor = speed * speed / 4f;
+		m_speed = speed;
+		m_speedFactor = speed * speed;
 		m_disFactor = distant * distant;
 		m_MidPoint = midPoint;
-		m_Direct = direct;
+		m_Direct = direct / 2;
+		m_colorIdx = colorIdx;
 
 		m_Playing = true;
 		m_Timer = 0;
