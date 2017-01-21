@@ -37,8 +37,9 @@ public class EffectController : Singleton<EffectController>
 
 	public List<EffectBase> targetEffBases = new List<EffectBase>();
 
-	public void ShowLineEffect(Vector2 pos, Color color)
+	public void ShowLineEffect(Vector2 pos, int colorIdx)
 	{
+		var color = Config.ColorPool[colorIdx];
 		var effect = lineEffCreater.ShowEffect(pos, color);
 
 		StartCoroutine(
@@ -49,11 +50,12 @@ public class EffectController : Singleton<EffectController>
 				}));
 	}
 
-	public void ShowTargetEffect(Vector2 pos, Color color, int life)
+	public void ShowTargetEffect(Vector2 pos, int colorIdx, int life)
 	{
+		var color = Config.ColorPool[colorIdx];
 		var effect = targetEffCreater.ShowEffect(pos, color);
 
-		effect.Init(life);
+		effect.Init(life, colorIdx);
 
 		targetEffBases.Add(effect);
 	}
@@ -76,11 +78,12 @@ public class EffectController : Singleton<EffectController>
 		}
 	}
 
-	public void TryKillTargets(float a, float b, float c)
+	public void TryKillTargets(float a, float b, float c, int colorIdx)
 	{
 		for(int i = 0; i < targetEffBases.Count; i++)
 		{
-			if(!targetEffBases[i].IsKilling() &&
+			if(targetEffBases[i].CheckColorIdx(colorIdx) &&
+			   !targetEffBases[i].IsKilling() &&
 			   CanKillTarget(a, b, c, targetEffBases[i]))
 			{
 				targetEffBases[i].Kill();
