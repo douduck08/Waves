@@ -5,19 +5,37 @@ using TeamSignal.Utilities;
 
 public class EffectController : Singleton<EffectController>
 {
-	private EffectCreater lineEffCreater = null;
-	private EffectCreater targetEffCreater = null;
+	private EffectCreater _lineEffCreater = null;
+
+	private EffectCreater lineEffCreater
+	{
+		get
+		{
+			if(null == _lineEffCreater)
+			{
+				var lineEff = Resources.Load("Prefabs/LineEffectCreater") as GameObject;
+				_lineEffCreater = TSUtil.Instantiate(lineEff, transform).GetComponent<EffectCreater>();
+			}
+			return _lineEffCreater;
+		}
+	}
+
+	private EffectCreater _targetEffCreater = null;
+
+	private EffectCreater targetEffCreater
+	{
+		get
+		{
+			if(null == _targetEffCreater)
+			{
+				var targetEff = Resources.Load("Prefabs/TargetEffectCreater") as GameObject;
+				_targetEffCreater = TSUtil.Instantiate(targetEff, transform).GetComponent<EffectCreater>();
+			}
+			return _targetEffCreater;
+		}
+	}
 
 	public List<EffectBase> targetEffBases = new List<EffectBase>();
-
-	void Awake()
-	{
-		var lineEff = Resources.Load("LineEffectCreater") as GameObject;
-		lineEffCreater = TSUtil.Instantiate(lineEff, transform).GetComponent<EffectCreater>();
-
-		var targetEff = Resources.Load("TargetEffectCreater") as GameObject;
-		targetEffCreater = TSUtil.Instantiate(targetEff, transform).GetComponent<EffectCreater>();
-	}
 
 	public void ShowLineEffect(Vector2 pos, Color color)
 	{
@@ -62,8 +80,8 @@ public class EffectController : Singleton<EffectController>
 	{
 		for(int i = 0; i < targetEffBases.Count; i++)
 		{
-			if(	!targetEffBases[i].IsKilling() &&
-				CanKillTarget(a,b,c,targetEffBases[i]))
+			if(!targetEffBases[i].IsKilling() &&
+			   CanKillTarget(a, b, c, targetEffBases[i]))
 			{
 				targetEffBases[i].Kill();
 			}
@@ -75,7 +93,7 @@ public class EffectController : Singleton<EffectController>
 		var x = target.transform.position.x;
 		var y = target.transform.position.y;
 		var child = Mathf.Abs((a * x) + (b * y) + c);
-		var parent = Mathf.Sqrt((a*a) + (b*b));
+		var parent = Mathf.Sqrt((a * a) + (b * b));
 		var d = child / parent;
 		return d <= target.radius;
 	}
