@@ -8,7 +8,7 @@ public class EffectController : Singleton<EffectController>
 	private EffectCreater lineEffCreater = null;
 	private EffectCreater targetEffCreater = null;
 
-	public List<TargetInfo> targetInfos = new List<TargetInfo>();
+	public List<EffectBase> targetInfos = new List<EffectBase>();
 
 	void Awake()
 	{
@@ -35,14 +35,14 @@ public class EffectController : Singleton<EffectController>
 	{
 		var effect = targetEffCreater.ShowEffect(pos, color);
 
-		var info = new TargetInfo(5, effect);
+		effect.Init(5);
 
-		targetInfos.Add(info);
+		targetInfos.Add(effect);
 	}
 
 	public void SubTargetLifeTime()
 	{
-		List<TargetInfo> removes = new List<TargetInfo>();
+		List<EffectBase> removes = new List<EffectBase>();
 
 		for(int i = 0; i < targetInfos.Count; i++)
 		{
@@ -58,32 +58,13 @@ public class EffectController : Singleton<EffectController>
 		}
 	}
 
-	public void EndTarget(TargetInfo info)
+	public void EndTarget(EffectBase effect)
 	{
-		if(targetInfos.Contains(info))
+		if(targetInfos.Contains(effect))
 		{
 			// TODO: call main system
-			info.effectBase.GetComponent<ParticleSystem>().gameObject.SetActive(false);
-			targetInfos.Remove(info);
-		}
-	}
-
-	public class TargetInfo
-	{
-		public int lifeTime;
-		public EffectBase effectBase;
-
-		public TargetInfo(int lifeTime, EffectBase targetBase)
-		{
-			this.lifeTime = lifeTime;
-			this.effectBase = targetBase;
-		}
-
-		public bool CheckDieAndSubTime()
-		{
-			lifeTime -= 1;
-			effectBase.SetLife(lifeTime);
-			return (lifeTime <= 0);
+			effect.particle.gameObject.SetActive(false);
+			targetInfos.Remove(effect);
 		}
 	}
 }
