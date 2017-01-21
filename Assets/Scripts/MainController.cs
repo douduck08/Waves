@@ -79,6 +79,6 @@ public class MainController : MonoBehaviour {
 		float a = diff_.x;
 		float b = diff_.y;
 		float c = -(a * mid_.x + b * mid_.y);
-		EffectController.Instance.TryKillTargets (a, b, c);
+		EffectController.Instance.TryKillTargets (a, b, c, 0);
 	}
 }

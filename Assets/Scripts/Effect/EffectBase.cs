@@ -9,11 +9,13 @@ public class EffectBase : MonoBehaviour
 	public TextMesh lifeText;
 	public ParticleSystem particle;
 	private bool isKilling = false;
+	private int colorIdx;
 
-	public void Init(int life)
+	public void Init(int life, int colorIdx)
 	{
 		lifeTime = life;
 		isKilling = false;
+		this.colorIdx = colorIdx;
 	}
 
 	public void SetLife(int life)
@@ -38,6 +40,10 @@ public class EffectBase : MonoBehaviour
 	{
 		if(isKilling) return;
 		isKilling = true;
+	}
 
+	public bool CheckColorIdx(int idx)
+	{
+		return colorIdx == idx;
 	}
 }
