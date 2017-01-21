@@ -38,10 +38,24 @@ public class EffectController : Singleton<EffectController>
 
 	public List<EffectBase> targetEffBases = new List<EffectBase>();
 
+	private Action<int> onKillTarget;
+
+	public void SetKillTargetCallback(Action<int> callback)
+	{
+		onKillTarget = callback;
+	}
+
+	public int GetCurrentTargetCnt()
+	{
+		return targetEffBases.Count;
+	}
+
 	public void ShowLineEffect(Vector2 pos, int colorIdx)
 	{
 		var color = Config.ColorPool[colorIdx];
 		var effect = lineEffCreater.ShowEffect(pos, color);
+
+		onKillTarget(TryKillTargets(pos, colorIdx));
 
 		StartCoroutine(
 			TSUtil.WaitForSeconds(effect.particle.main.duration + 0.5f, () =>
@@ -118,6 +132,42 @@ public class EffectController : Singleton<EffectController>
 		var parent = Mathf.Sqrt((a * a) + (b * b));
 		var d = child / parent;
 		return d <= target.radius;
+	}
+
+	private int TryKillTargets(Vector2 pos, int colorIdx)
+	{
+		List<EffectBase> removes = new List<EffectBase>();
+
+		for(int i = 0; i < targetEffBases.Count; i++)
+		{
+			if(targetEffBases[i].CheckColorIdx(colorIdx) &&
+			   !targetEffBases[i].IsKilling() &&
+			   CanKillTarget(pos, targetEffBases[i]))
+			{
+				Debug.Log("Kill Target By Pos: " + targetEffBases[i].name, targetEffBases[i].gameObject);
+				removes.Add(targetEffBases[i]);
+			}
+		}
+
+		for(int i = 0; i < removes.Count; i++)
+		{
+			EndTarget(removes[i]);
+		}
+
+		return removes.Count;
+	}
+
+	private bool CanKillTarget(Vector2 pos, EffectBase target)
+	{
+		var collders = Physics2D.OverlapCircleAll(pos, target.radius);
+		for(int i = 0; i < collders.Length; i++)
+		{
+			if(collders[i].gameObject.Equals(target.gameObject))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private bool EndTarget(EffectBase effect)

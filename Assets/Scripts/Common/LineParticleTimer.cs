@@ -34,7 +34,7 @@ public class LineParticleTimer : MonoBehaviour {
 
 				if (CheckBound (pos1_, pos2_)) {
 					m_Playing = false;
-					m_EndingCallback ();
+//					m_EndingCallback ();
 				}
 			}
 			m_Timer += Time.deltaTime;

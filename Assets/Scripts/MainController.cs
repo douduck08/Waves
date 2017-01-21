@@ -15,33 +15,73 @@ public class MainController : MonoBehaviour {
 	private float m_timer;
 	private LineParticleTimer[] m_LineParticleTimers;
 
+	public AudioSource bgm;
+	private bool playBgm = false;
+
+	public StageController stageCtrl;
+	public PlayerInfo playerInfo = new PlayerInfo();
+	[SerializeField] private int roundCnt;
+
 	void Awake() {
 		for (int i = 0; i < 6; i++) {
 			Config.ColorPool [i] = ColorSetting [i];
 		}
+		this.enabled = false;
+		EffectController.Instance.SetKillTargetCallback(OnKillCnt);
 	}
 
 	void Start () {
 		m_timer = 0f;
 		InitialLineParticleTimers ();
-		GenerateTarget (3, 5);
+
+		TryNextStage();
+		// TODO: UI to Start
 	}
 
 	[ContextMenu("Create")]
 	private void Test()
 	{
-		GenerateTarget (3, 5);
+		GenerateTarget (3, 10);
 	}
 	
 	void Update () {
+		if(!playBgm)
+		{
+			playBgm = true;
+			bgm.Play();
+		}
+
 		if (m_timer < RoundTime) {
 			m_timer += Time.deltaTime;
 		} else {
 			PlayAllPulse ();
 			PlayAllLineParticle ();
 			CountTargetLife ();
+			TryNextStage();
 			m_timer = 0;
 		}
+	}
+
+	private void TryNextStage()
+	{
+		if(EffectController.Instance.GetCurrentTargetCnt() != 0)
+		{
+			roundCnt++;
+
+			if(!stageCtrl.CanCreateNewStage(playerInfo.killCnt)) return;
+			if(!stageCtrl.CanCreateNewTargetBy(roundCnt)) return;
+		}
+
+		roundCnt = 0;
+		var stage = stageCtrl.GetStage(playerInfo.killCnt);
+		var life = Random.Range(stage.lifeMin, stage.lifeMax);
+		Debug.Log("life " + life);
+		GenerateTarget(stage.targetAmount, life);
+	}
+
+	private void OnKillCnt(int killCnt)
+	{
+		playerInfo.killCnt += killCnt;
 	}
 
 	private void InitialLineParticleTimers() {
@@ -57,7 +97,7 @@ public class MainController : MonoBehaviour {
 		for (int i = 0; i < number; i++) {
 			float x_ = Random.Range (-TargetBound.x, TargetBound.x);
 			float y_ = Random.Range (-TargetBound.y, TargetBound.y);
-			int color_ = Random.Range (0, 3);
+			int color_ = Random.Range (3, 6);
 			EffectController.Instance.ShowTargetEffect (new Vector2 (x_, y_), color_, life);
 		}
 	}

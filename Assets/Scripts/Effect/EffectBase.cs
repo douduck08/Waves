@@ -11,13 +11,19 @@ public class EffectBase : MonoBehaviour
 	private bool isKilling = false;
 	private int colorIdx;
 	public LineRenderer lineRen;
+	public CircleCollider2D circle;
 
 	public void Init(int life, int colorIdx)
 	{
 		lifeTime = life;
 		isKilling = false;
 		this.colorIdx = colorIdx;
+		var color = Config.ColorPool[colorIdx];
+		this.lifeText.color = color;
+		lineRen.SetColors(color, Color.white);
 		SetLife(life);
+
+		circle.radius = radius;
 	}
 
 	public void SetLife(int life)
@@ -54,6 +60,7 @@ public class EffectBase : MonoBehaviour
 	{
 		var ren = lifeText.GetComponent<Renderer>();
 		ren.sortingLayerName = "TextMesh";
+		ren.sortingOrder = 0;
 	}
 
 	[ContextMenu("ResetLineRenSortingLaye")]
