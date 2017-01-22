@@ -16,6 +16,7 @@ public class EffectBase : MonoBehaviour
 	private int colorIdx;
 	public LineRenderer lineRen;
 	public CircleCollider2D circle;
+	public TrailRenderer trailRen;
 
 	public AnimationCurve killCurve;
 	public AnimationCurve timeoutCurve;
@@ -88,6 +89,14 @@ public class EffectBase : MonoBehaviour
 	public bool CheckColorIdx(int idx)
 	{
 		return colorIdx == idx;
+	}
+
+	public void SetTrailColor(Color color)
+	{
+		if(null != trailRen)
+		{
+			trailRen.material.SetColor("_TintColor", color);
+		}
 	}
 
 	[ContextMenu("ResetTextSortingLaye")]

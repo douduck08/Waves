@@ -37,6 +37,7 @@ public class EffectController : Singleton<EffectController>
 	}
 
 	public List<EffectBase> targetEffBases = new List<EffectBase>();
+	public Dictionary<LineParticleTimer,EffectBase[]> lineEffBases = new Dictionary<LineParticleTimer,EffectBase[]>();
 
 	private Action<int> onKillTarget;
 
@@ -50,19 +51,39 @@ public class EffectController : Singleton<EffectController>
 		return targetEffBases.Count;
 	}
 
-	public void ShowLineEffect(Vector2 pos, int colorIdx)
+	public void ShowLineEffect(Vector2 pos, int colorIdx, LineParticleTimer lineTimer, int lineIdx)
 	{
-		var color = Config.ColorPool[colorIdx];
-		var effect = lineEffCreater.ShowEffect(pos, color);
-
 		onKillTarget(TryKillTargets(pos, colorIdx));
 
-		StartCoroutine(
-			TSUtil.WaitForSeconds(effect.particle.main.duration + 0.5f, () =>
-				{
-					effect.particle.Stop();
-					effect.gameObject.SetActive(false);
-				}));
+		var color = Config.ColorPool[colorIdx];
+
+		EffectBase effect = null;
+		EffectBase[] lineEffs = null;
+		if(!lineEffBases.TryGetValue(lineTimer, out lineEffs))
+		{
+			effect = lineEffCreater.ShowEffect(pos, color);
+			lineEffs = new EffectBase[2];
+			lineEffs[lineIdx] = effect;
+			lineEffBases.Add(lineTimer, lineEffs);
+		}
+
+		effect = lineEffs[lineIdx];
+		if(null == effect)
+		{
+			effect = lineEffCreater.ShowEffect(pos, color);
+			lineEffs[lineIdx] = effect;
+		}
+
+		effect.SetTrailColor(color);
+		effect.transform.position = pos;
+
+//		var effect = lineEffCreater.ShowEffect(pos, color);
+//		StartCoroutine(
+//			TSUtil.WaitForSeconds(effect.particle.main.duration + 0.5f, () =>
+//				{
+//					effect.particle.Stop();
+//					effect.gameObject.SetActive(false);
+//				}));
 	}
 
 	public void ShowTargetEffect(Vector2 pos, int colorIdx, int life)
