@@ -31,6 +31,7 @@ public class MainController : MonoBehaviour {
 		this.enabled = false;
 		EffectController.Instance.SetKillTargetCallback(OnKillCnt);
 		EffectController.Instance.SetTargetTimeout(OnTargetTimeout);
+		uiMenu.SetScore();
 	}
 
 	void Start () {
@@ -47,8 +48,9 @@ public class MainController : MonoBehaviour {
 	}
 
 	public void StartGame () {
-		this.enabled = true;
 		playerInfo.ResetGameInfo();
+
+		this.enabled = true;
 		uiHudCtrl.SetLife(playerInfo.life);
 		uiHudCtrl.SetKill(playerInfo.killCnt);
 	}
@@ -58,7 +60,9 @@ public class MainController : MonoBehaviour {
 		playBgm = false;
 		bgm.Stop ();
 
+		playerInfo.ResetMaxKill();
 		uiMenu.gameObject.SetActive(true);
+		uiMenu.SetScore();
 		EffectController.Instance.ResetEffects();
 	}
 	

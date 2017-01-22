@@ -12,12 +12,15 @@ public class PlayerInfo
 
 	public void ResetGameInfo()
 	{
+		killCnt = 0;
+		life = 3;
+	}
+
+	public void ResetMaxKill()
+	{
 		if(maxKill < killCnt)
 		{
 			maxKill = killCnt;
 		}
-
-		killCnt = 0;
-		life = 3;
 	}
 }

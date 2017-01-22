@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour {
 
 		Vector2 clickPos_;
 
-		#if UNITY_EDITOR
+		#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_STANDALONE_OSX
 		clickPos_ = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		#else	
 		clickPos_ = Camera.main.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y));
@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour {
 	private void OnMouseBeginDrag (GameObject go) {
 		m_OnDrag = true;
 
-		#if UNITY_EDITOR
+		#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_STANDALONE_OSX
 		m_BeginPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		#else	
 		m_BeginPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y));
@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour {
 	private void OnMouseDrag (GameObject go) {
 		Vector2 clickPos_;
 
-		#if UNITY_EDITOR
+		#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_STANDALONE_OSX
 		clickPos_ = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		#else	
 		clickPos_ = Camera.main.ScreenToWorldPoint(new Vector3(Input.GetTouch(0).position.x, Input.GetTouch(0).position.y));
