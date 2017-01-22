@@ -35,13 +35,22 @@ public class MainController : MonoBehaviour {
 		InitialLineParticleTimers ();
 
 		TryNextStage();
-		// TODO: UI to Start
 	}
 
 	[ContextMenu("Create")]
 	private void Test()
 	{
 		GenerateTarget (3, 10);
+	}
+
+	public void StartGame () {
+		this.enabled = true;
+	}
+
+	public void GameOver () {
+		this.enabled = false;
+		playBgm = false;
+		bgm.Stop ();
 	}
 	
 	void Update () {
