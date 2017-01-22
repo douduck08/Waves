@@ -6,60 +6,40 @@ public class StageController : MonoBehaviour
 {
 	public List<StageData> stages = new List<StageData>();
 
-	[HideInInspector] public StageData currentStage;
-	[HideInInspector] public StageData nextStage;
-
-	public StageData GetStage(int level)
+	void Awake()
 	{
-		int currentLv = level;
+		stages.Sort((t1, t2) =>
+			{
+				return -t1.killCnt.CompareTo(t2.killCnt);
+			});
+	}
+
+	public StageData GetStage(int killCnt)
+	{
+		StageData data = null;
 		for(int i = 0; i < stages.Count; i++)
 		{
-			if(null != currentStage && currentStage == stages[i]) break;
-
-			if(stages[i].needLevel >= currentLv)
+			if(stages[i].killCnt <= killCnt)
 			{
-				currentLv = stages[i].needLevel;
-				currentStage = stages[i];
-				if(i == stages.Count - 1)
-				{
-					nextStage = stages[i];
-				}
-				else
-				{
-					nextStage = stages[i + 1];
-				}
+				data = stages[i];
 
-				Debug.Log("currentStage: " + currentStage.needLevel);
-				Debug.Log("nextStage: " + nextStage.needLevel);
+				Debug.Log("currentStage: " + data.killCnt);
 				break;
 			}
 		}
-		return currentStage;
-	}
-
-	public bool CanCreateNewStage(int level)
-	{
-		if(null == nextStage)
-		{	
-			return true;
-		}
-		return (level >= nextStage.needLevel);
+		return data;
 	}
 
 	public bool CanCreateNewTargetBy(int rountCnt)
 	{
-		if(null == currentStage)
-		{
-			return true;
-		}
-
-		return rountCnt >= currentStage.createRoundCnt;
+		// TODO:
+		return true;
 	}
 
 	[System.Serializable]
 	public class StageData
 	{
-		public int needLevel;
+		public int killCnt;
 		public int createRoundCnt;
 
 		public int targetAmount;

@@ -64,13 +64,9 @@ public class MainController : MonoBehaviour {
 
 	private void TryNextStage()
 	{
-		if(EffectController.Instance.GetCurrentTargetCnt() != 0)
-		{
-			roundCnt++;
+		roundCnt++;
 
-			if(!stageCtrl.CanCreateNewStage(playerInfo.killCnt)) return;
-			if(!stageCtrl.CanCreateNewTargetBy(roundCnt)) return;
-		}
+		if(!stageCtrl.CanCreateNewTargetBy(roundCnt)) return;
 
 		roundCnt = 0;
 		var stage = stageCtrl.GetStage(playerInfo.killCnt);
