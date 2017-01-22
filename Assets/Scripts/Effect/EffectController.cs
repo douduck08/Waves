@@ -36,6 +36,37 @@ public class EffectController : Singleton<EffectController>
 		}
 	}
 
+	private EffectCreater _killEffCreater = null;
+
+	private EffectCreater killEffCreater
+	{
+		get
+		{
+			if(null == _killEffCreater)
+			{
+				var targetEff = Resources.Load("Prefabs/KillEffectCreater") as GameObject;
+				_killEffCreater = TSUtil.Instantiate(targetEff, transform).GetComponent<EffectCreater>();
+			}
+			return _killEffCreater;
+		}
+	}
+
+	private EffectCreater _timeoutEffCreater = null;
+
+	private EffectCreater timeoutEffCreater
+	{
+		get
+		{
+			if(null == _timeoutEffCreater)
+			{
+				var targetEff = Resources.Load("Prefabs/TimeoutEffectCreater") as GameObject;
+				_timeoutEffCreater = TSUtil.Instantiate(targetEff, transform).GetComponent<EffectCreater>();
+			}
+			return _timeoutEffCreater;
+		}
+	}
+
+
 	public List<EffectBase> targetEffBases = new List<EffectBase>();
 	public Dictionary<LineParticleTimer,EffectBase[]> lineEffBases = new Dictionary<LineParticleTimer,EffectBase[]>();
 
@@ -92,14 +123,6 @@ public class EffectController : Singleton<EffectController>
 
 		effect.SetTrailColor(color);
 		effect.transform.position = pos;
-
-//		var effect = lineEffCreater.ShowEffect(pos, color);
-//		StartCoroutine(
-//			TSUtil.WaitForSeconds(effect.particle.main.duration + 0.5f, () =>
-//				{
-//					effect.particle.Stop();
-//					effect.gameObject.SetActive(false);
-//				}));
 	}
 
 	public void ShowTargetEffect(Vector2 pos, int colorIdx, int life)
@@ -110,6 +133,32 @@ public class EffectController : Singleton<EffectController>
 		effect.Init(life, colorIdx);
 
 		targetEffBases.Add(effect);
+	}
+
+	public void ShowKillEffect(Vector2 pos, int colorIdx)
+	{
+		var color = Config.ColorPool[colorIdx];
+		var effect = killEffCreater.ShowEffect(pos, color);
+
+		StartCoroutine(
+			TSUtil.WaitForSeconds(effect.particle.main.duration + 0.5f, () =>
+				{
+					effect.particle.Stop();
+					effect.gameObject.SetActive(false);
+				}));
+	}
+
+	public void ShowTimeoutEffect(Vector2 pos, int colorIdx)
+	{
+		var color = Config.ColorPool[colorIdx];
+		var effect = timeoutEffCreater.ShowEffect(pos, color);
+
+		StartCoroutine(
+			TSUtil.WaitForSeconds(effect.particle.main.duration + 0.5f, () =>
+				{
+					effect.particle.Stop();
+					effect.gameObject.SetActive(false);
+				}));
 	}
 
 	public void SubTargetLifeTime(Action<int> callback = null)
@@ -216,6 +265,11 @@ public class EffectController : Singleton<EffectController>
 					if(isTimeout)
 					{
 						onTargetTimeout();
+						ShowTimeoutEffect(effect.transform.position, effect.colorIdx);
+					}
+					else
+					{
+						ShowKillEffect(effect.transform.position, effect.colorIdx);
 					}
 					targetEffBases.Remove(effect);
 				});

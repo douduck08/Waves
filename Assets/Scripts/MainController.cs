@@ -48,7 +48,7 @@ public class MainController : MonoBehaviour {
 
 	public void StartGame () {
 		this.enabled = true;
-		playerInfo = new PlayerInfo();
+		playerInfo.ResetGameInfo();
 		uiHudCtrl.SetLife(playerInfo.life);
 		uiHudCtrl.SetKill(playerInfo.killCnt);
 	}

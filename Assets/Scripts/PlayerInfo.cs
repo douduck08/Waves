@@ -6,15 +6,18 @@ public class PlayerInfo
 {
 	public int killCnt = 0;
 
-	private int m_maxKill = 0;
-	public int maxKill {
-		get {
-			if (m_maxKill < killCnt) {
-				m_maxKill = killCnt;
-			}
-			return m_maxKill;
-		}
-	}
+	public int maxKill = 0;
 
 	public int life = 3;
+
+	public void ResetGameInfo()
+	{
+		if(maxKill < killCnt)
+		{
+			maxKill = killCnt;
+		}
+
+		killCnt = 0;
+		life = 3;
+	}
 }

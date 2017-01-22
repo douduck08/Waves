@@ -13,7 +13,7 @@ public class EffectBase : MonoBehaviour
 	public ParticleSystem particle;
 	private bool isKilling = false;
 	private bool isTimeouting = false;
-	private int colorIdx;
+	public int colorIdx;
 	public LineRenderer lineRen;
 	public CircleCollider2D circle;
 	public TrailRenderer trailRen;
@@ -30,7 +30,7 @@ public class EffectBase : MonoBehaviour
 		this.colorIdx = colorIdx;
 		var color = Config.ColorPool[colorIdx];
 		this.lifeText.color = color;
-		lineRen.SetColors(color, Color.white);
+		lineRen.SetColors(color, color);
 		SetLife(life);
 
 		circle.radius = radius;
