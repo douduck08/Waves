@@ -89,7 +89,7 @@ public class EffectController : Singleton<EffectController>
 
 		for(int i = 0; i < removes.Count; i++)
 		{
-			EndTarget(removes[i]);
+			EndTarget(removes[i], true);
 		}
 
 		if(null != callback)
@@ -115,7 +115,7 @@ public class EffectController : Singleton<EffectController>
 
 		for(int i = 0; i < removes.Count; i++)
 		{
-			EndTarget(removes[i]);
+			EndTarget(removes[i], false);
 		}
 
 		if(null != callback)
@@ -151,7 +151,7 @@ public class EffectController : Singleton<EffectController>
 
 		for(int i = 0; i < removes.Count; i++)
 		{
-			EndTarget(removes[i]);
+			EndTarget(removes[i], false);
 		}
 
 		return removes.Count;
@@ -170,13 +170,14 @@ public class EffectController : Singleton<EffectController>
 		return false;
 	}
 
-	private bool EndTarget(EffectBase effect)
+	private bool EndTarget(EffectBase effect, bool isTimeout)
 	{
 		if(targetEffBases.Contains(effect))
 		{
-			effect.Kill();
-			effect.gameObject.SetActive(false);
-			targetEffBases.Remove(effect);
+			effect.Kill(isTimeout, () =>
+				{
+					targetEffBases.Remove(effect);
+				});
 			return true;
 		}
 		return false;

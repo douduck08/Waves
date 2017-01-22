@@ -26,7 +26,7 @@ public class MainController : MonoBehaviour {
 		for (int i = 0; i < 6; i++) {
 			Config.ColorPool [i] = ColorSetting [i];
 		}
-		this.enabled = false;
+//		this.enabled = false;
 		EffectController.Instance.SetKillTargetCallback(OnKillCnt);
 	}
 

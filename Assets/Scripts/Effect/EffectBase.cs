@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using TeamSignal.Utilities;
+using DG.Tweening;
 
 public class EffectBase : MonoBehaviour
 {
@@ -9,14 +12,20 @@ public class EffectBase : MonoBehaviour
 	public TextMesh lifeText;
 	public ParticleSystem particle;
 	private bool isKilling = false;
+	private bool isTimeouting = false;
 	private int colorIdx;
 	public LineRenderer lineRen;
 	public CircleCollider2D circle;
 
+	public AnimationCurve killCurve;
+	public AnimationCurve timeoutCurve;
+
 	public void Init(int life, int colorIdx)
 	{
+		transform.localScale = Vector3.one;
 		lifeTime = life;
 		isKilling = false;
+		isTimeouting = false;
 		this.colorIdx = colorIdx;
 		var color = Config.ColorPool[colorIdx];
 		this.lifeText.color = color;
@@ -44,10 +53,36 @@ public class EffectBase : MonoBehaviour
 		return isKilling;
 	}
 
-	public void Kill()
+	public void Kill(bool isTimeout, Action callback)
 	{
-		if(isKilling) return;
-		isKilling = true;
+		if(isTimeout)
+		{
+			if(isTimeouting) return;
+			isTimeouting = true;
+
+			transform.DOScale(Vector3.zero, 3f)
+				.SetEase(timeoutCurve)
+				.OnComplete(() =>
+				{
+					gameObject.SetActive(false);
+					callback();
+				});
+	
+		}
+		else
+		{
+			if(isKilling) return;
+			isKilling = true;
+
+			DOTween.Kill(transform);
+			transform.DOScale(Vector3.zero, 0.5f)
+				.SetEase(killCurve)
+				.OnComplete(() =>
+				{
+					gameObject.SetActive(false);
+					callback();
+				});
+		}
 	}
 
 	public bool CheckColorIdx(int idx)
