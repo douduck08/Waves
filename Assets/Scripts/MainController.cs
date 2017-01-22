@@ -21,13 +21,16 @@ public class MainController : MonoBehaviour {
 	public StageController stageCtrl;
 	public PlayerInfo playerInfo = new PlayerInfo();
 	[SerializeField] private int roundCnt;
+	public Menu uiMenu;
+	public UIHudController uiHudCtrl;
 
 	void Awake() {
 		for (int i = 0; i < 6; i++) {
 			Config.ColorPool [i] = ColorSetting [i];
 		}
-//		this.enabled = false;
+		this.enabled = false;
 		EffectController.Instance.SetKillTargetCallback(OnKillCnt);
+		EffectController.Instance.SetTargetTimeout(OnTargetTimeout);
 	}
 
 	void Start () {
@@ -45,12 +48,18 @@ public class MainController : MonoBehaviour {
 
 	public void StartGame () {
 		this.enabled = true;
+		playerInfo = new PlayerInfo();
+		uiHudCtrl.SetLife(playerInfo.life);
+		uiHudCtrl.SetKill(playerInfo.killCnt);
 	}
 
 	public void GameOver () {
 		this.enabled = false;
 		playBgm = false;
 		bgm.Stop ();
+
+		uiMenu.gameObject.SetActive(true);
+		EffectController.Instance.ResetEffects();
 	}
 	
 	void Update () {
@@ -69,6 +78,11 @@ public class MainController : MonoBehaviour {
 			TryNextStage();
 			m_timer = 0;
 		}
+
+		if(playerInfo.life <= 0)
+		{
+			GameOver();
+		}
 	}
 
 	private void TryNextStage()
@@ -80,13 +94,21 @@ public class MainController : MonoBehaviour {
 		roundCnt = 0;
 		var stage = stageCtrl.GetStage(playerInfo.killCnt);
 		var life = Random.Range(stage.lifeMin, stage.lifeMax);
-		Debug.Log("life " + life);
 		GenerateTarget(stage.targetAmount, life);
 	}
 
 	private void OnKillCnt(int killCnt)
 	{
 		playerInfo.killCnt += killCnt;
+
+		uiHudCtrl.SetKill(playerInfo.killCnt);
+	}
+
+	private void OnTargetTimeout()
+	{
+		playerInfo.life -= 1;
+
+		uiHudCtrl.SetLife(playerInfo.life);
 	}
 
 	private void InitialLineParticleTimers() {

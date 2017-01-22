@@ -15,4 +15,6 @@ public class PlayerInfo
 			return m_maxKill;
 		}
 	}
+
+	public int life = 3;
 }

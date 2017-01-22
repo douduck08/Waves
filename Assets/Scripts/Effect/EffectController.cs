@@ -40,15 +40,31 @@ public class EffectController : Singleton<EffectController>
 	public Dictionary<LineParticleTimer,EffectBase[]> lineEffBases = new Dictionary<LineParticleTimer,EffectBase[]>();
 
 	private Action<int> onKillTarget;
+	private Action onTargetTimeout;
 
 	public void SetKillTargetCallback(Action<int> callback)
 	{
 		onKillTarget = callback;
 	}
 
+	public void SetTargetTimeout(Action callback)
+	{
+		onTargetTimeout = callback;
+	}
+
 	public int GetCurrentTargetCnt()
 	{
 		return targetEffBases.Count;
+	}
+
+	public void ResetEffects()
+	{
+		for(int i = 0; i < targetEffBases.Count; i++)
+		{
+			targetEffBases[i].gameObject.SetActive(false);
+		}
+
+		targetEffBases.Clear();
 	}
 
 	public void ShowLineEffect(Vector2 pos, int colorIdx, LineParticleTimer lineTimer, int lineIdx)
@@ -197,6 +213,10 @@ public class EffectController : Singleton<EffectController>
 		{
 			effect.Kill(isTimeout, () =>
 				{
+					if(isTimeout)
+					{
+						onTargetTimeout();
+					}
 					targetEffBases.Remove(effect);
 				});
 			return true;
