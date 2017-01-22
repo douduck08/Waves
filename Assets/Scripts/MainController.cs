@@ -58,6 +58,7 @@ public class MainController : MonoBehaviour {
 	public void GameOver () {
 		this.enabled = false;
 		playBgm = false;
+		m_timer = 0;
 		bgm.Stop ();
 
 		playerInfo.ResetMaxKill();
